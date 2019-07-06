@@ -1,0 +1,18 @@
+.form {
+    width: 400px;
+    border: 2px solid #ddd;
+    padding: 5px;
+  }
+  
+  .form_item{
+    display: flex;
+    margin-bottom: 5px;
+  }
+  
+  .label {
+    margin-right: 10px;
+  }
+  
+  input {
+    flex-grow: 1;
+  }

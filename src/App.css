@@ -1,0 +1,122 @@
+.wrapper {
+  margin-bottom: 20px;
+}
+
+.form {
+  margin-bottom:20px;
+  width: 250px;
+}
+
+
+
+
+/*TABLE*/
+/* #title {
+    text-align: center;
+    font-family: arial, sans-serif;
+  } */
+  
+  table {
+    text-align: center;
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    cursor: pointer;
+    /* border-collapse: collapse;
+    border: 3px solid #ddd; */
+    /* width: 100%; */
+  }
+  table .row{
+      /* display: flex; */
+      
+  }
+  table .empty{
+    border: 1px solid #fff;
+    padding: 8px;
+    background-color: #fff;
+  }
+  .button_wrapper{
+    float: left;
+    padding: 6px;
+    background-color: #fff;
+  }
+  .remove_wrapper{
+    padding: 6px;
+    background-color: #fff;
+    position: absolute;
+    top: 0px;
+    left: 0;
+    height: 32px;
+  }
+  .add_wrapper{
+    padding: 6px;
+    background-color: #fff;
+    position: absolute;
+    top: 0px;
+    right: 0;
+    height: 32px;
+  }
+  table .column{
+    border: 1px solid #ddd;
+    padding: 8px;
+    /* background: linear-gradient(to top, #39ff00 65%, transparent 0%); */
+  }
+  
+  table .row:nth-child(even){background-color: #f2f2f2;}
+  /* table .row:last-child(even){background-color: #ffffff;} */
+  
+  table .column:hover {background-color: #c7b9b9;}
+  .buttons{
+    width: 81px;
+    min-width: 81px;
+    position: relative;
+  }
+  
+   table .sum, table .avarage {
+    border: 1px solid #ddd;
+    padding: 8px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: center;
+    background-color: #4CAF50;
+    color: white;
+  }
+
+ table .selected{
+  background-color: #c7b9b9;    
+}
+.remove {
+  width: 29px;
+  height: 30px;
+  background-color: #ddd;
+  border-radius: 16px;
+  font-size: 24px;
+  font-weight: 400;
+  color: #f75f7e;
+}
+.add{
+  width: 30px;
+  height: 30px;
+  background-color: #ddd;
+  border-radius: 16px;
+  font-size: 25px;
+  font-weight: 500;
+  color:#7494ea;
+}
+.remove:hover{
+  background-color: #f75f7e;
+  color: #fff;
+}
+.add:hover{
+  background-color: #7494ea;
+  color: #fff;
+}
+
+
+
+
+
+
+
+
+
+
+
