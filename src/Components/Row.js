@@ -49,7 +49,7 @@ const Row = (props) => {
                                 rel={rowId}
                                 key={`${rowId}del`}
                                 >
-                                &#10799;
+                                &#10006;
                             </div>
                     </div>
                     <div className="add_wrapper">

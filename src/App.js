@@ -225,7 +225,8 @@ class App extends Component {
                 sameNums.push(cell);
               }else if(selectedNum < currentNum){
                 if(biggerNums.length >= siblingsLen){
-                  biggerNums.splice(-1,1,cell);
+                  if(biggerNums[siblingsLen-1].amount >= cell.amount)
+                    biggerNums.splice(-1,1,cell);
                 }else{
                   biggerNums.push(cell);
                 }
@@ -234,7 +235,8 @@ class App extends Component {
                 });
               }else if(selectedNum > currentNum){
                 if(smallerNums.length >= siblingsLen){
-                  smallerNums.splice(-1, 1, cell);
+                  if(smallerNums[siblingsLen-1].amount <= cell.amount)
+                    smallerNums.splice(-1, 1, cell);
                 }else{
                   smallerNums.push(cell);
                 }
