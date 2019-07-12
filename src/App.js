@@ -4,6 +4,7 @@ import './App.css';
 import Form from './Components/Form';
 import Row from './Components/Row';
 import AvarageRow from './Components/AvarageRow';
+import { detectCloserToSelectedCellByPosition, getClothestAmounts } from './Utils/pureFunctions';
 
 class App extends Component {
   constructor(props){
@@ -152,11 +153,12 @@ class App extends Component {
                   
               },
     mouseOverCell: e => {
-                    const selectedId = this.getCellId(e);
+                    const selectedId = this.getCellId(e),
+                          selectedNum = parseInt(e.target.innerText);
                     
                     const siblingsLen = this.state.matrixSize.selectedCells;
-                    const closerNums = this.collectClotherNumbers(this.state.matrixData, siblingsLen, parseInt(e.target.innerText), selectedId);
-                    const bigestCellSiblings = this.getBiggestSiblings({...closerNums}, siblingsLen);
+                    const closerNums = this.collectClotherNumbers(this.state.matrixData, siblingsLen, selectedNum, selectedId);
+                    const bigestCellSiblings = this.getBiggestSiblings({...closerNums}, siblingsLen, selectedNum, selectedId);
                     
                     this.updateCells(bigestCellSiblings);
                   },
@@ -186,30 +188,47 @@ class App extends Component {
     this.prevBiggestSiblings = bigestCellSiblings;
   }
 
-  getBiggestSiblings = ({biggerNums, smallerNums, sameNums}, siblingsLen) => {
+  getBiggestSiblings = ({biggerNums, smallerNums, sameNums}, siblingsLen, selectedNum, selectedId) => {
     let bigestSiblings = [];
-    if(sameNums.length >= siblingsLen){
+    const sameNumsLen = sameNums.length;
+    if(sameNumsLen >= siblingsLen){
       bigestSiblings = sameNums.splice(0, siblingsLen);
-    }else{
-      sameNums = sameNums.concat(biggerNums);
-    }
-    if(sameNums.length >= siblingsLen && smallerNums.length === 0){
-      bigestSiblings = sameNums.splice(0, siblingsLen);
-    }else{
-      sameNums = smallerNums.reverse().concat(sameNums);
-      if(sameNums.length === siblingsLen){
-        bigestSiblings = sameNums.slice();
+    }else{ 
+      if(sameNumsLen)
+        siblingsLen = siblingsLen - sameNumsLen;
+
+      if(biggerNums.length >= siblingsLen && smallerNums.length === 0){
+        bigestSiblings = biggerNums.splice(0, siblingsLen).concat(sameNums);
+      }else if(smallerNums.length >= siblingsLen && biggerNums === 0){
+        bigestSiblings = biggerNums.splice(-1, siblingsLen).concat(sameNums);
+      }else{
+        let mixedNums = smallerNums.reverse().concat(biggerNums);
+        if(mixedNums.length === siblingsLen){
+          bigestSiblings = mixedNums.concat(sameNums);
         }else{
-          const extra = sameNums.length - siblingsLen;
-          const startPos = Math.round(extra/2-extra%2);
-          bigestSiblings = sameNums.splice(startPos, siblingsLen);
+          const closest = getClothestAmounts(selectedNum, mixedNums.slice(), siblingsLen, selectedId);
+          bigestSiblings = closest.concat(sameNums);
         }
       }
-      return bigestSiblings;
     }
+    return bigestSiblings;
+  }
 
     collectClotherNumbers = (matrix, siblingsLen, selectedNum, selectedId) => {
       const matLen = Object.keys(matrix).length-1;
+      const [selectedNumRow, selectedNumCol] = selectedId.split('_');
+      const sortBiggestNums = ( a, b ) => {
+        if( a.amount === b.amount ){
+          return detectCloserToSelectedCellByPosition( a, b, selectedNumRow, selectedNumCol );
+        }
+        return (a.amount - b.amount);
+      }
+      const sortSmallersNums = ( a, b ) => {
+        if( a.amount === b.amount ){
+          return detectCloserToSelectedCellByPosition( a, b, selectedNumRow, selectedNumCol );
+        }
+        return (b.amount - a.amount);
+      }
 
       let biggerNums = [], 
           smallerNums = [],
@@ -225,30 +244,33 @@ class App extends Component {
                 sameNums.push(cell);
               }else if(selectedNum < currentNum){
                 if(biggerNums.length >= siblingsLen){
-                  if(biggerNums[siblingsLen-1].amount >= cell.amount)
+                  if(biggerNums[siblingsLen-1].amount >= cell.amount){
                     biggerNums.splice(-1,1,cell);
+                    biggerNums.sort(sortBiggestNums);
+                  }
                 }else{
                   biggerNums.push(cell);
+                  biggerNums.sort(sortBiggestNums);
                 }
-                biggerNums.sort(function(a, b) {
-                    return (a.amount - b.amount);
-                });
               }else if(selectedNum > currentNum){
                 if(smallerNums.length >= siblingsLen){
-                  if(smallerNums[siblingsLen-1].amount <= cell.amount)
+                  if(smallerNums[siblingsLen-1].amount <= cell.amount){
                     smallerNums.splice(-1, 1, cell);
+                    smallerNums.sort( sortSmallersNums );
+                  }
                 }else{
                   smallerNums.push(cell);
+                  smallerNums.sort( sortSmallersNums );
                 }
-                smallerNums.sort(function(a, b) {
-                    return (b.amount - a.amount);
-                });
               }              
             }
           });
 
         }
       });
+      sameNums.sort( ( a, b ) => {
+        return detectCloserToSelectedCellByPosition( a, b, selectedNumRow, selectedNumCol );
+       });
 
       return {biggerNums, smallerNums, sameNums}
     }
